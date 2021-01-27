@@ -3,3 +3,29 @@
 about(){
 
 }
+
+SecureReinforce(){
+    
+}
+
+chooseAutoOrManually(){
+    echo "************ 正在进行系统安全加固 "************"
+    echo "> 是否选择默认安全配置进行加固，自动/默认配置（Y），手动配置（N）：" mode
+    case $mode in 
+        [Y,y])
+            SecureReinforce
+        ;;
+        [N,n])
+            SecureReinforce
+        ;;
+        *)
+            echo "请正确输入(y)或者(n)。"
+}
+
+main(){
+    clear
+    about
+    chooseAutoOrManually
+}
+
+main

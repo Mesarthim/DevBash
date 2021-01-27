@@ -4,7 +4,27 @@ about(){
 
 }
 
+ShowDoing(){
+    echo “> 正在进行”$1“...“
+}
+
+ShowDone(){
+    echo "> "$1"加固完成。"
+}
+
 SecureReinforce(){
+    if [[ -n $1 ]];then
+        
+    fi
+    local PASS_MIN_MODIFY="10"
+    local PASS_MAX_MODIFY="8"
+    
+    local SYSTEM_AUTH="/etc/pam.d/system-auth"
+    local PAM_SSHD="/etc/pam.d/sshd"
+    
+    ShowDoing "密码"
+    sed -i "/Permit" $SYSTEM_AUTH
+    ShowDone “密码”
     
 }
 

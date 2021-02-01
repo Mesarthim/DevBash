@@ -4,29 +4,64 @@ about(){
 
 }
 
+AboutVersion(){
+    v='cat /etc/issue | awk '{print $1}''
+    case $v in
+        ["Debian", "Ubuntu", "Linux Mint"])
+            FILE_CONFIG_DEFS='/etc/config.defs'
+            FILE_PASSWD='/etc/passwd'
+            FILE_SHADOW='/etc/shadow'
+            FILE_SSHD='/etc/sshd'
+            FILE_SSH_CONFIG='/etc/ssh/ssh_config'
+            FILE_SYSTEM_AUTH='/etc/pam.d/system-auth'
+    ;;
+        ["CentOS", "Fedora", "RHEL"])
+            FILE_CONFIG_DEFS='/etc/config.defs'
+            FILE_PASSWD='/etc/passwd'
+            FILE_SHADOW='/etc/shadow'
+            FILE_SSHD='/etc/sshd'
+            FILE_SSH_CONFIG='/etc/ssh/ssh_config'
+            FILE_SYSTEM_AUTH='/etc/pam.d/common-password'
+    ;;
+        *)
+            echo "Linux版本未知"
+}
+
+
+PASS_MAX_DAYS='180'
+PASS_MIN_DAYS='0'
+PASS_MIN_LEN='8'
+PASS_WARN_DAYS='7'
+
+
 ShowDoing(){
     echo “> 正在进行”$1“...“
 }
 
+
 ShowDone(){
-    echo "> "$1"加固完成。"
+    echo "> "$1"完成。"
 }
+
+
+Rein(){
+    sed -i '$1 $2' $3
+}
+
 
 SecureReinforce(){
     if [[ -n $1 ]];then
+        Rein "/^PASS_MAX_DAYS/c\PASS_MAX_DAYS" PASS_MAX_DAYS FILE_CONFIG_DEFS
+        Rein "/^PASS_MIN_DAYS/c\PASS_MIN_DAYS" PASS_MIN_DAYS FILE_CONFIG_DEFS
+        Rein "/^PASS_MIN_LEN/c\PASS_MIN_LEN" PASS_MIN_LEN FILE_CONFIG_DEFS
+        Rein "/^PASS_WARN_DAYS/c\PASS_WARN_DAYS" PASS_WARN_DAYS FILE_CONFIG_DEFS
+        
+        
+    else
         
     fi
-    local PASS_MIN_MODIFY="10"
-    local PASS_MAX_MODIFY="8"
-    
-    local SYSTEM_AUTH="/etc/pam.d/system-auth"
-    local PAM_SSHD="/etc/pam.d/sshd"
-    
-    ShowDoing "密码"
-    sed -i "/Permit" $SYSTEM_AUTH
-    ShowDone “密码”
-    
 }
+
 
 chooseAutoOrManually(){
     echo "************ 正在进行系统安全加固 "************"
@@ -40,12 +75,16 @@ chooseAutoOrManually(){
         ;;
         *)
             echo "请正确输入(y)或者(n)。"
+    esac
 }
+
 
 main(){
     clear
     about
+    AboutVersion
     chooseAutoOrManually
 }
+
 
 main
